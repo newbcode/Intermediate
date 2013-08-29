@@ -70,28 +70,29 @@ sub del_num {
     my $num = shift;
     my $t_list = $list;
     my $p_list;
-    my $elem_cnt = 0;
     my $flag = 'off';
 
     while ( $t_list ) {
         if ( $t_list->[VAL] == $num ) {
             $flag = 'on';
             if ( $t_list->[NEXT] eq "" ) {
-                #splice @{$t_list->[NEXT]}, 0, 1;
-                p @{$t_list};
-                p @{$p_list};
-                splice (@$p_list, 0, 1);
-                p @{$p_list};
-                $list = $p_list;
+                shift @{$p_list}; 
+                unshift @{$p_list}, undef;
                 say "(Last number)$num deleted successfully";
             }
             else {
+                p @{$p_list};
+                p @{$t_list};
+                shift @{$p_list}; 
+                p @{$p_list};
+                $list = $p_list;
+                p $list;
+
                 say "$num deleted successfully";
             }
         }
         $p_list = $t_list;
         $t_list = $t_list->[NEXT];
-        $elem_cnt++;
     }
     say "Not found $num" if ( $flag eq 'off' );
 }
