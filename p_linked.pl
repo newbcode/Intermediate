@@ -1,27 +1,38 @@
 #!/usr/bin/env perl 
 
 use strict;
-use warnings;
+#use warnings;
 use 5.010;
 use Sysadm::Install qw (:all);
 use Data::Printer;
+use constant NEXT   => 0;
+use constant VAL    => 1;
 
-my $list;
-my $node = 0;
-my $tail =\$list;
+
+my $list = undef;
 
 while (1) {
     my $op_mode = pick("Linked List Operations", ["Insert", "Display", "Size",
             "Delete", "Addall", "Exit"], 1);
 
     if ( $op_mode eq "Insert" ) {
-        say "Enter the number insert : ";
+        say "Enter the number to insert : ";
         chomp (my $num = <STDIN>);
         insert($num);
     }
     elsif ( $op_mode eq "Display" ) {
-        say "Display Element of Hash";
         display();
+    }
+    elsif ( $op_mode eq "Size" ) {
+        size();
+    }
+    elsif ( $op_mode eq "Delete" ) {
+        say "Enter the number to delete : ";
+        chomp (my $num = <STDIN>);
+        del_num($num);
+    }
+    elsif ( $op_mode eq "Addall" ) {
+        addall();
     }
     elsif ( $op_mode eq "Exit" ) {
         exit;
@@ -30,29 +41,71 @@ while (1) {
 
 sub insert {
     my $num = shift;
-
-    if ( $node == 0 ) {
-        say "Empity Hash!";
-        $node = { data => $num };
-        $$tail = $node;
-        $tail = \$node->{data};
-        say "$num Insert!";
-    }
-    else {
-        $node = { data => $num };
-        $tail = $node;
-        say "Success insert $tail->{data}";
-        $tail = \$node->{data};
-    }
+    
+    $list = [ $list, $num ];
+    say "Success insert to $num";
 }
 
 sub display {
-    while ( $list != ) {
-        say "Display $tail->{data}"
+    say "List is Empty" if ( $list eq "" );
+    my $t_list = $list;
+    while ( $t_list ne ""  ) {
+        say "Element(s) in the list are : $t_list->[VAL]";
+        $t_list = $t_list->[NEXT];
     }
 }
-    
 
+sub size {
+    my $cnt = 0;
+    my $t_list = $list;
+
+    while ( $t_list ) {
+        $t_list = $t_list->[NEXT];
+        $cnt++;
+    }
+    say "Size of ther list is $cnt";
+}
+
+sub del_num {
+    my $num = shift;
+    my $t_list = $list;
+    my $p_list;
+    my $elem_cnt = 0;
+    my $flag = 'off';
+
+    while ( $t_list ) {
+        if ( $t_list->[VAL] == $num ) {
+            $flag = 'on';
+            if ( $t_list->[NEXT] eq "" ) {
+                #splice @{$t_list->[NEXT]}, 0, 1;
+                p @{$t_list};
+                p @{$p_list};
+                splice (@$p_list, 0, 1);
+                p @{$p_list};
+                $list = $p_list;
+                say "(Last number)$num deleted successfully";
+            }
+            else {
+                say "$num deleted successfully";
+            }
+        }
+        $p_list = $t_list;
+        $t_list = $t_list->[NEXT];
+        $elem_cnt++;
+    }
+    say "Not found $num" if ( $flag eq 'off' );
+}
+
+sub addall {
+    my $t_list = $list;
+    my $sum;
+    while ( $t_list ) {
+        my $num = $t_list->[VAL];
+        $sum += $num;
+        $t_list = $t_list->[NEXT];
+    }
+    say "Add all number is $sum";
+}
 
 =pod
 foreach my $num ( 1..5 ) {
