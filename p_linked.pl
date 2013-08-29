@@ -81,13 +81,7 @@ sub del_num {
                 say "(Last number)$num deleted successfully";
             }
             else {
-                p @{$p_list};
-                p @{$t_list};
-                shift @{$p_list}; 
-                p @{$p_list};
-                $list = $p_list;
-                p $list;
-
+                $p_list->[NEXT] = $t_list->[NEXT];
                 say "$num deleted successfully";
             }
         }
